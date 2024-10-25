@@ -22,7 +22,7 @@ def create():
         "ietf-ip:ipv4": {
             "address": [
                 {
-                    "ip": "10.10.10.10",
+                    "ip": "172.30.135.1",
                     "netmask": "255.255.255.0"
                 }
             ]
@@ -38,14 +38,17 @@ def create():
         headers=headers, 
         verify=False
         )
-
-    if(resp.status_code >= 200 and resp.status_code <= 299):
-        print("STATUS OK: {}".format(resp.status_code))
-        return "Interface loopback 65070135 is created successfully"
+    statuss = status()
+    print(statuss)
+    if statuss == "No Interface loopback 65070135":
+        if(resp.status_code >= 200 and resp.status_code <= 299):
+            print("STATUS OK: {}".format(resp.status_code))
+            return "Interface loopback 65070135 is created successfully"
+        else:
+            print('Error. Status Code: {}'.format(resp.status_code))
+            return "Cannot create: Interface loopback 65070135"
     else:
-        print('Error. Status Code: {}'.format(resp.status_code))
         return "Cannot create: Interface loopback 65070135"
-
 
 def delete():
     resp = requests.delete(
@@ -56,14 +59,17 @@ def delete():
            }, 
         verify=False
         )
-
-    if(resp.status_code >= 200 and resp.status_code <= 299):
-        print("STATUS OK: {}".format(resp.status_code))
-        return "Interface loopback 65070135 is deleted successfully"
+    statuss = status()
+    print(statuss)
+    if statuss == "Interface loopback 65070135 is enabled" or statuss == "Interface loopback 65070135 is disabled":
+        if(resp.status_code >= 200 and resp.status_code <= 299):
+            print("STATUS OK: {}".format(resp.status_code))
+            return "Interface loopback 65070135 is deleted successfully"
+        else:
+            print('Error. Status Code: {}'.format(resp.status_code))
+            return "Cannot delete: Interface loopback 65070135"
     else:
-        print('Error. Status Code: {}'.format(resp.status_code))
         return "Cannot delete: Interface loopback 65070135"
-
 
 def enable():
     yangConfig = {
@@ -84,14 +90,17 @@ def enable():
            }, 
         verify=False
         )
-    print("mos")
-    if(resp.status_code >= 200 and resp.status_code <= 299):
-        print("STATUS OK: {}".format(resp.status_code))
-        return "Interface loopback 65070135 is enabled successfully"
+    statuss = status()
+   
+    if statuss == "Interface loopback 65070135 is enabled":
+        if(resp.status_code >= 200 and resp.status_code <= 299):
+            print("STATUS OK: {}".format(resp.status_code))
+            return "Interface loopback 65070135 is enabled successfully"
+        else:
+            print('Error. Status Code: {}'.format(resp.status_code))
+            return "Cannot enable: Interface loopback 65070135"
     else:
-        print('Error. Status Code: {}'.format(resp.status_code))
         return "Cannot enable: Interface loopback 65070135"
-
 
 def disable():
     yangConfig = {
@@ -112,14 +121,16 @@ def disable():
            }, 
         verify=False
         )
-
-    if(resp.status_code >= 200 and resp.status_code <= 299):
-        print("STATUS OK: {}".format(resp.status_code))
-        return "Interface loopback 65070135 is disable successfully"
+    statuss = status()
+    if statuss == "Interface loopback 65070135 is enabled":
+        if(resp.status_code >= 200 and resp.status_code <= 299):
+            print("STATUS OK: {}".format(resp.status_code))
+            return "Interface loopback 65070135 is disable successfully"
+        else:
+            print('Error. Status Code: {}'.format(resp.status_code))
+            return "Cannot disnable: Interface loopback 65070135"
     else:
-        print('Error. Status Code: {}'.format(resp.status_code))
-        return "Cannot disnable: Interface loopback 65070135"
-
+        return "Cannot disable: Interface loopback 65070135"
 def status():
     api_url_status = "https://10.0.15.182/restconf/data/ietf-interfaces:interfaces-state/interface=Loopback65070135"
 
