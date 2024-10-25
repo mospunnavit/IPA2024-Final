@@ -41,62 +41,84 @@ def create():
 
     if(resp.status_code >= 200 and resp.status_code <= 299):
         print("STATUS OK: {}".format(resp.status_code))
-        return "create success"
+        return "Interface loopback 65070135 is created successfully"
     else:
         print('Error. Status Code: {}'.format(resp.status_code))
-        return "cannot create"
+        return "Cannot create: Interface loopback 65070135"
 
 
-# def delete():
-#     resp = requests.<!!!REPLACEME with the proper HTTP Method!!!>(
-#         <!!!REPLACEME with URL!!!>, 
-#         auth=basicauth, 
-#         headers=<!!!REPLACEME with HTTP Header!!!>, 
-#         verify=False
-#         )
+def delete():
+    resp = requests.delete(
+        "https://10.0.15.182/restconf/data/ietf-interfaces:interfaces/interface=Loopback65070135", 
+        auth=basicauth, 
+        headers={ "Accept": "application/yang-data+json", 
+            "Content-type":"application/yang-data+json"
+           }, 
+        verify=False
+        )
 
-#     if(resp.status_code >= 200 and resp.status_code <= 299):
-#         print("STATUS OK: {}".format(resp.status_code))
-#         return "<!!!REPLACEME with proper message!!!>"
-#     else:
-#         print('Error. Status Code: {}'.format(resp.status_code))
-
-
-# def enable():
-#     yangConfig = <!!!REPLACEME with YANG data!!!>
-
-#     resp = requests.<!!!REPLACEME with the proper HTTP Method!!!>(
-#         <!!!REPLACEME with URL!!!>, 
-#         data=json.dumps(<!!!REPLACEME with yangConfig!!!>), 
-#         auth=basicauth, 
-#         headers=<!!!REPLACEME with HTTP Header!!!>, 
-#         verify=False
-#         )
-
-#     if(resp.status_code >= 200 and resp.status_code <= 299):
-#         print("STATUS OK: {}".format(resp.status_code))
-#         return "<!!!REPLACEME with proper message!!!>"
-#     else:
-#         print('Error. Status Code: {}'.format(resp.status_code))
+    if(resp.status_code >= 200 and resp.status_code <= 299):
+        print("STATUS OK: {}".format(resp.status_code))
+        return "Interface loopback 65070135 is deleted successfully"
+    else:
+        print('Error. Status Code: {}'.format(resp.status_code))
+        return "Cannot delete: Interface loopback 65070135"
 
 
-# def disable():
-#     yangConfig = <!!!REPLACEME with YANG data!!!>
+def enable():
+    yangConfig = {
+    "ietf-interfaces:interface": {
+        "name": "Loopback65070135",
+        "type": "iana-if-type:softwareLoopback",
+        "enabled": True,
+        
+    }
+}
+    
+    resp = requests.put(
+        "https://10.0.15.182/restconf/data/ietf-interfaces:interfaces/interface=Loopback65070135", 
+        data=json.dumps(yangConfig), 
+        auth=basicauth, 
+        headers={ "Accept": "application/yang-data+json", 
+            "Content-type":"application/yang-data+json"
+           }, 
+        verify=False
+        )
+    print("mos")
+    if(resp.status_code >= 200 and resp.status_code <= 299):
+        print("STATUS OK: {}".format(resp.status_code))
+        return "Interface loopback 65070135 is enabled successfully"
+    else:
+        print('Error. Status Code: {}'.format(resp.status_code))
+        return "Cannot enable: Interface loopback 65070135"
 
-#     resp = requests.<!!!REPLACEME with the proper HTTP Method!!!>(
-#         <!!!REPLACEME with URL!!!>, 
-#         data=json.dumps(<!!!REPLACEME with yangConfig!!!>), 
-#         auth=basicauth, 
-#         headers=<!!!REPLACEME with HTTP Header!!!>, 
-#         verify=False
-#         )
 
-#     if(resp.status_code >= 200 and resp.status_code <= 299):
-#         print("STATUS OK: {}".format(resp.status_code))
-#         return "<!!!REPLACEME with proper message!!!>"
-#     else:
-#         print('Error. Status Code: {}'.format(resp.status_code))
+def disable():
+    yangConfig = {
+    "ietf-interfaces:interface": {
+        "name": "Loopback65070135",
+        "type": "iana-if-type:softwareLoopback",
+        "enabled": False,
+        
+    }
+}
 
+    resp = requests.put(
+        "https://10.0.15.182/restconf/data/ietf-interfaces:interfaces/interface=Loopback65070135", 
+        data=json.dumps(yangConfig), 
+        auth=basicauth, 
+        headers={ "Accept": "application/yang-data+json", 
+            "Content-type":"application/yang-data+json"
+           }, 
+        verify=False
+        )
+
+    if(resp.status_code >= 200 and resp.status_code <= 299):
+        print("STATUS OK: {}".format(resp.status_code))
+        return "Interface loopback 65070135 is disable successfully"
+    else:
+        print('Error. Status Code: {}'.format(resp.status_code))
+        return "Cannot disnable: Interface loopback 65070135"
 
 def status():
     api_url_status = "https://10.0.15.182/restconf/data/ietf-interfaces:interfaces-state/interface=Loopback65070135"
@@ -110,8 +132,7 @@ def status():
         verify=False
         )
     
-    print("STATUS OK: {}".format(resp.status_code))
-    print(resp.json())
+  
     
     if(resp.status_code >= 200 and resp.status_code <= 299):
          print("STATUS OK: {}".format(resp.status_code))
@@ -119,11 +140,11 @@ def status():
          admin_status = response_json['ietf-interfaces:interface']['admin-status']
          oper_status = response_json['ietf-interfaces:interface']['oper-status']
          if admin_status == 'up' and oper_status == 'up':
-            return "up"
+            return "Interface loopback 65070135 is enabled"
          elif admin_status == 'down' and oper_status == 'down':
-            return "down"
+            return "Interface loopback 65070135 is disabled"
     elif(resp.status_code == 404):
         print("STATUS NOT FOUND: {}".format(resp.status_code))
-        return "not found"
+        return "No Interface loopback 65070135"
     else:
         print('Error. Status Code: {}'.format(resp.status_code))

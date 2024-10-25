@@ -68,10 +68,11 @@ while True:
 
     # check if the text of the message starts with the magic character "/" followed by your studentID and a space and followed by a command name
     #  e.g.  "/66070123 create"
-    if message.find("/65070135") == 0:
+    if message.startswith("/65070135"):
 
         # extract the command
-        command = message.replace("/65070135 ", "")
+        parts = message.split()  # แยกข้อความออกเป็นคำตามช่องว่าง
+        command = parts[1] if len(parts) > 1 else None  # ดึงคำสั่งจากข้อความถ้ามี
         print(command)
 
 # 5. Complete the logic for each command
@@ -80,12 +81,12 @@ while True:
            responseMessage = restconf_final.create()  
         elif command == "delete":
            responseMessage = restconf_final.delete()
-        # elif command == "enable":
-        #     <!!!REPLACEME with code for enable command!!!>
-        # elif command == "disable":
-        #     <!!!REPLACEME with code for disable command!!!>
+        elif command == "enable":
+           responseMessage = restconf_final.enable()
+        elif command == "disable":
+           responseMessage = restconf_final.disable()
         elif command == "status":
-            responseMessage = netconf_final.status()
+            responseMessage = restconf_final.status()
         #  elif command == "gigabit_status":
         #     <!!!REPLACEME with code for gigabit_status command!!!>
         # elif command == "showrun":
