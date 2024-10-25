@@ -9,13 +9,13 @@ import os
 import requests
 import time
 import json
-from dotenv import load_dotenv
 import netconf_final
+import restconf_final
 
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
-load_dotenv()
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+
+ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 
 #######################################################################################
 # 3. Prepare parameters get the latest message for messages API.
@@ -68,28 +68,28 @@ while True:
 
     # check if the text of the message starts with the magic character "/" followed by your studentID and a space and followed by a command name
     #  e.g.  "/66070123 create"
-    if message.startswith("<!!!REPLACEME!!!>"):
+    if message.find("/65070135") == 0:
 
         # extract the command
-        command = <!!!REPLACEME!!!>
+        command = message.replace("/65070135 ", "")
         print(command)
 
 # 5. Complete the logic for each command
 
         if command == "create":
-            <!!!REPLACEME with code for create command!!!>     
+           responseMessage = restconf_final.create()  
         elif command == "delete":
-            <!!!REPLACEME with code for delete command!!!>
-        elif command == "enable":
-            <!!!REPLACEME with code for enable command!!!>
-        elif command == "disable":
-            <!!!REPLACEME with code for disable command!!!>
+           responseMessage = restconf_final.delete()
+        # elif command == "enable":
+        #     <!!!REPLACEME with code for enable command!!!>
+        # elif command == "disable":
+        #     <!!!REPLACEME with code for disable command!!!>
         elif command == "status":
-            <!!!REPLACEME with code for status command!!!>
-         elif command == "gigabit_status":
-            <!!!REPLACEME with code for gigabit_status command!!!>
-        elif command == "showrun":
-            <!!!REPLACEME with code for showrun command!!!>
+            responseMessage = netconf_final.status()
+        #  elif command == "gigabit_status":
+        #     <!!!REPLACEME with code for gigabit_status command!!!>
+        # elif command == "showrun":
+        #     <!!!REPLACEME with code for showrun command!!!>
         else:
             responseMessage = "Error: No command or unknown command"
         
@@ -107,33 +107,34 @@ while True:
         # Read Send a Message with Attachments Local File Attachments
         # https://developer.webex.com/docs/basics for more detail
 
-        if command == "showrun" and responseMessage == 'ok':
-            filename = "<!!!REPLACEME with show run filename and path!!!>"
-            fileobject = <!!!REPLACEME with open file!!!>
-            filetype = "<!!!REPLACEME with Content-type of the file!!!>"
-            postData = {
-                "roomId": <!!!REPLACEME!!!>,
-                "text": "show running config",
-                "files": (<!!!REPLACEME!!!>, <!!!REPLACEME!!!>, <!!!REPLACEME!!!>),
-            }
-            postData = MultipartEncoder(<!!!REPLACEME!!!>)
-            HTTPHeaders = {
-            "Authorization": ACCESS_TOKEN,
-            "Content-Type": <!!!REPLACEME with postData Content-Type!!!>,
-            }
+        # if command == "showrun" and responseMessage == 'ok':
+            # filename = "<!!!REPLACEME with show run filename and path!!!>"
+            # fileobject = <!!!REPLACEME with open file!!!>
+            # filetype = "<!!!REPLACEME with Content-type of the file!!!>"
+            # postData = {
+            #     "roomId": <!!!REPLACEME!!!>,
+            #     "text": "show running config",
+            #     "files": (<!!!REPLACEME!!!>, <!!!REPLACEME!!!>, <!!!REPLACEME!!!>),
+            # }
+            # postData = MultipartEncoder(<!!!REPLACEME!!!>)
+            # HTTPHeaders = {
+            # "Authorization": ACCESS_TOKEN,
+            # "Content-Type": <!!!REPLACEME with postData Content-Type!!!>,
+            # }
         # other commands only send text, or no attached file.
-        else:
-            postData = {"roomId": <!!!REPLACEME!!!>, "text": <!!!REPLACEME!!!>}
-            postData = json.dumps(postData)
+        # else:
+        postData = {"roomId": roomIdToGetMessages, "text": responseMessage}
+        postData = json.dumps(postData)
 
-            # the Webex Teams HTTP headers, including the Authoriztion and Content-Type
-            HTTPHeaders = {"Authorization": <!!!REPLACEME!!!>, "Content-Type": <!!!REPLACEME!!!>}   
+        # the Webex Teams HTTP headers, including the Authoriztion and Content-Type
+        HTTPHeaders = {"Authorization": 'Bearer {}'.format(ACCESS_TOKEN), 
+                "Content-Type": "application/json"}   
 
         # Post the call to the Webex Teams message API.
         r = requests.post(
-            "<!!!REPLACEME with URL of Webex Teams Messages API!!!>",
-            data=<!!!REPLACEME!!!>,
-            headers=<!!!REPLACEME!!!>,
+            "https://webexapis.com/v1/messages",
+            data=postData,
+            headers=HTTPHeaders,
         )
         if not r.status_code == 200:
             raise Exception(
